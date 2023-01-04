@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mouse touch</title>
+    </head>
+    <body>
+
+        <div id="ss">
+            <h1 class="ch1">1v1 Shoot Fight</h1>
+            <button class="buttons" style="background-color: green;" onclick="create();">Create a room</button>
+            <button class="buttons" style="background-color: blue;" onclick="join();">Join a room</button>
+            <button class="buttons" style="background-color: brown;" onclick="guide();">How to play?</button>
+        </div>
+        <div id="cr">
+            <h1 class="ch1">Enter room's name</h1>
+            <input class="inputs" id="rn" value="Write here">
+            <button onclick="send(document.getElementById('rn').value)" class="buttons">Create</button>
+        </div>
+        <div id="jr">
+            <h1 class="ch1">Enter room's name</h1>
+            <input class="inputs" id="rn2" value="Write here">
+            <button class="buttons">Join</button>
+            <ul id="ar">Available rooms:</ul> 
+        </div>
+    </body>
+    <style>
+        .buttons{
+            display: block;
+            margin: 0 auto;
+            width:200px;
+            height:100px;
+            font-size: 20px;
+        }
+
+        .ch1{
+            text-align: center;
+        }
+
+        .inputs{
+            display: block;
+            margin: 0 auto;
+            width: 200px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        #ar{
+            text-align: left;
+        }
+    </style>
+
+
+
+    <script>
+            document.getElementById("cr").style.display = "none";
+            document.getElementById("jr").style.display = "none";
+            function create(){
+                document.getElementById("ss").style.display = "none";
+                document.getElementById("cr").style.display = "block";
+
+            }
+            async function join(){
+                var array2 = await get_info();
+                console.log(array2)
+                for(var i = 0; i < array2.length; i++){
+                    var ul = document.getElementById("ar");
+                    var li = document.createElement("li");
+                    console.log(array2[i]["room_name"]);
+                    li.appendChild(document.createTextNode(array2[i]["room_name"]));
+                    ul.appendChild(li);
+                }
+                document.getElementById("ss").style.display = "none";
+                document.getElementById("jr").style.display = "block";   
+
+            }
+            function guide(){
+                //
+            }
+
+
+            function send(room_name) {
+                var data = {room_name};
+                const options = {
+                  method:"POST",
+                  headers: {"Content-Type":"application/json"
+
+                },
+                  body: JSON.stringify(data)
+                };
+                fetch('/rooms', options).then(function(response){
+                  if(response.status == 200){
+                      console.log("ok");
+                  }
+                });
+            }
+
+            async function get_info(){
+                const response = await fetch("/rooms")
+                const data = await response.json();
+                console.log(data);
+                return data;
+            }
+            
+       </script>
+</html>
